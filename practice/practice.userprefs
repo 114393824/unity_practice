@@ -1,9 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/FPSInput.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/PlayerController.cs">
     <Files>
-      <File FileName="Assets/MouseLook.cs" Line="26" Column="31" />
-      <File FileName="Assets/FPSInput.cs" Line="7" Column="44" />
+      <File FileName="Assets/RayShooter.cs" Line="44" Column="17" />
+      <File FileName="Assets/ReactiveTarget.cs" Line="20" Column="30" />
+      <File FileName="Assets/WanderingAI.cs" Line="17" Column="3" />
+      <File FileName="Assets/SceneController.cs" Line="23" Column="1" />
+      <File FileName="Assets/Fireball.cs" Line="22" Column="17" />
+      <File FileName="Assets/PlayerController.cs" Line="8" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
