@@ -23,7 +23,7 @@ public class CameraFollow : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		SetTarget(GameObject.Find("Tank"))
+		SetTarget(GameObject.Find("Tank"));
 	}
 	
 	// Update is called once per frame
@@ -41,10 +41,10 @@ public class CameraFollow : MonoBehaviour {
 		float height = distance * Mathf.Sin(roll);
 
 		cameraPos.x = targetPos.x + d * Mathf.Cos(rot);
-		cameraPos.z = targetPos.z + d * Mathf.Sin(rot)
+		cameraPos.z = targetPos.z + d * Mathf.Sin(rot);
 		cameraPos.y = targetPos.y + height;
 
-		Camera.main.transform.position = cameraPos
+		Camera.main.transform.position = cameraPos;
 		Camera.main.transform.LookAt(target.transform);
 
 		Rotate();
@@ -54,9 +54,9 @@ public class CameraFollow : MonoBehaviour {
 
 	public void SetTarget(GameObject target){
 		if (target.transform.Find("cameraPoint") != null)
-			this.target = target.transform.Find("cameraPoint").gameObject
+			this.target = target.transform.Find("cameraPoint").gameObject;
 		else
-			this.target = target
+			this.target = target;
 	}
 
 	public void Zoom(){
