@@ -72,7 +72,7 @@ public class CameraFollow : MonoBehaviour {
 	}
 
 	public void Roll(){
-		float w = Input.GetAxis("Mouse Y") * rollSpeed * 0.5f;
+		float w = Input.GetAxis("Mouse Y") * rollSpeed;// * 0.5f
 		// Debug.Log("Roll--------------- w = " + w);
 		roll -= w;
 		if (roll > maxRoll)
