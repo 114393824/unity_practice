@@ -21,21 +21,17 @@ public class Tank : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		float speed = 1;
-		Debug.Log("Update ********** 1");
-		if(Input.GetKey(KeyCode.UpArrow)){
-			Debug.Log("Update ********** UpArrow");
+
+		if(Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)){
 			transform.eulerAngles = new Vector3(0,0,0);
 			transform.position += transform.forward * speed;
-		}else if(Input.GetKey(KeyCode.DownArrow)){
-			Debug.Log("Update ********** DownArrow");
+		}else if(Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)){
 			transform.eulerAngles = new Vector3(0,180,0);
 			transform.position += transform.forward * speed;
-		}else if(Input.GetKey(KeyCode.LeftArrow)){
-			Debug.Log("Update ********** LeftArrow");
+		}else if(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)){
 			transform.eulerAngles = new Vector3(0,270,0);
 			transform.position += transform.forward * speed;
-		}else if(Input.GetKey(KeyCode.RightArrow)){
-			Debug.Log("Update ********** RightArrow");
+		}else if(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)){
 			transform.eulerAngles = new Vector3(0,90,0);
 			transform.position += transform.forward * speed;
 		}
