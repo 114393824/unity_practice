@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour {
 	public float maxDistance = 22f;
 	public float minDistance = 5f;
 
-	public float zoomSpeed = 0.2f;
+	public float zoomSpeed = 12f;
 
 	// Use this for initialization
 	void Start () {
