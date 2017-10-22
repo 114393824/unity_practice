@@ -30,6 +30,37 @@ public class Tank : MonoBehaviour {
 	public AudioSource motorAudioSource;
 	public AudioClip motorClip;
 
+	public GameObject bullet;
+
+	public float lastShootTime = 0;
+	private float shootInterval = 0.5f;
+
+	public enum CtrlType
+	{
+		none,
+		player,
+		computer
+	}
+	public CtrlType ctrlType = CtrlType.player;
+
+	private float maxHp = 100;
+	public float hp = 100;
+
+	public GameObject destroyEffect;
+
+	public Texture2D centerSight;
+	public Texture2D tankSight;
+
+	public Texture2D hpBarBg;
+	public Texture2D hpBar;
+
+	public Texture2D killUI;
+
+	private float killUIStartTime = float.MinValue;
+
+	public AudioSource shootAudioSource;
+	public AudioClip shootClip;
+
 	// Use this for initialization
 	void Start () {
 		this.turret = transform.Find ("turret");
@@ -39,6 +70,9 @@ public class Tank : MonoBehaviour {
 
 		this.motorAudioSource = gameObject.AddComponent<AudioSource> ();
 		this.motorAudioSource.spatialBlend = 1;
+
+		this.shootAudioSource = gameObject.AddComponent<AudioSource> ();
+		this.shootAudioSource.spatialBlend = 1;
 	}
 	
 	// Update is called once per frame
@@ -60,26 +94,6 @@ public class Tank : MonoBehaviour {
 //		}
 		PlayerCtrl ();
 
-		TurretRotation ();
-		TurretRoll ();
-
-		MotorSound();
-	}
-
-	public void PlayerCtrl(){
-		this.motor = this.maxMotorTorque * Input.GetAxis ("Vertical");
-		this.steering = this.maxSteeringAngle * Input.GetAxis ("Horizontal");
-
-		this.brakeTorque = 0;
-		foreach(AxleInfo axleInfo in axleInfos){
-			if(axleInfo.leftWheel.rpm > 5 && this.motor < 0){//前进时
-				this.brakeTorque = this.maxBrakeTorque;
-			}else if(axleInfo.leftWheel.rpm < -5 && this.motor > 0){
-				this.brakeTorque = this.maxBrakeTorque;
-			}
-			continue;
-		}
-
 		foreach(AxleInfo axleInfo in axleInfos){
 			if(axleInfo.steering){
 				axleInfo.leftWheel.steerAngle = this.steering;
@@ -100,8 +114,59 @@ public class Tank : MonoBehaviour {
 			}
 		}
 
-		this.turretRotTarget = Camera.main.transform.eulerAngles.y;
-		this.turretRollTarget = Camera.main.transform.eulerAngles.x;
+		TurretRotation ();
+		TurretRoll ();
+
+		MotorSound();
+
+	}
+
+	public void Shoot(){
+		if(Time.time - this.lastShootTime < this.shootInterval){
+			return;
+		}
+		if (this.bullet == null)
+			return;
+
+		Vector3 pos = this.gun.position + this.gun.forward * 5;
+		GameObject bulletObj = Instantiate (this.bullet,pos,gun.rotation);
+
+		Bullet bulletCmp = bulletObj.GetComponent<Bullet> ();
+		if (bulletCmp != null)
+			bulletCmp.attackTank = this.gameObject;
+
+		this.lastShootTime = Time.time;
+
+		this.shootAudioSource.PlayOneShot (this.shootClip);
+
+//		this.BeAttacked (30);
+	}
+
+	public void PlayerCtrl(){
+		if (this.ctrlType != CtrlType.player)
+			return;
+		
+		this.motor = this.maxMotorTorque * Input.GetAxis ("Vertical");
+		this.steering = this.maxSteeringAngle * Input.GetAxis ("Horizontal");
+
+		this.brakeTorque = 0;
+		foreach(AxleInfo axleInfo in axleInfos){
+			if(axleInfo.leftWheel.rpm > 5 && this.motor < 0){//前进时
+				this.brakeTorque = this.maxBrakeTorque;
+			}else if(axleInfo.leftWheel.rpm < -5 && this.motor > 0){
+				this.brakeTorque = this.maxBrakeTorque;
+			}
+			continue;
+		}
+
+
+//		this.turretRotTarget = Camera.main.transform.eulerAngles.y;
+//		this.turretRollTarget = Camera.main.transform.eulerAngles.x;
+
+		this.TargetSignPos ();
+
+		if (Input.GetMouseButton(0))
+			Shoot();
 	}
 
 	public void TurretRotation(){
@@ -180,5 +245,108 @@ public class Tank : MonoBehaviour {
 		}else if(this.motor == 0){
 			this.motorAudioSource.Pause ();
 		}
+	}
+
+	public void BeAttacked(float att,GameObject attackTank){
+		if(this.hp <= 0)
+			return;
+		if (this.hp > 0) {
+			this.hp -= att;
+		}
+		if(this.hp <= 0){
+			GameObject destoryObj = (GameObject)Instantiate (this.destroyEffect);
+			destoryObj.transform.SetParent (transform,false);
+			destoryObj.transform.localPosition = Vector3.zero;
+			this.ctrlType = CtrlType.none;
+
+			if(attackTank != null){
+				Tank tankCmp = attackTank.GetComponent<Tank> ();
+				if (tankCmp != null && tankCmp.ctrlType == CtrlType.player)
+					tankCmp.StartDrawKill ();
+			}
+		}
+	}
+
+	public void TargetSignPos(){
+		Vector3 hitPoint = Vector3.zero;
+		RaycastHit raycastHit;
+
+		Vector3 centerVec = new Vector3 (Screen.width / 2,Screen.height / 2,0);
+		Ray ray = Camera.main.ScreenPointToRay (centerVec);
+
+		if (Physics.Raycast (ray, out raycastHit, 400.0f)) {
+			hitPoint = raycastHit.point;
+		} else {
+			hitPoint = ray.GetPoint (400);
+		}
+
+		Vector3 dir = hitPoint - turret.position;
+		Quaternion angle = Quaternion.LookRotation (dir);
+
+		this.turretRotTarget = angle.eulerAngles.y;
+		this.turretRollTarget = angle.eulerAngles.x;
+
+	}
+
+	public Vector3 CalExplodePoint(){
+		Vector3 hitPoint = Vector3.zero;
+		RaycastHit hit;
+
+		Vector3 pos = this.gun.position + gun.forward * 5;
+		Ray ray = new Ray (pos,gun.forward);
+
+		if (Physics.Raycast (ray, out hit, 400.0f)) {
+			hitPoint = hit.point;	
+		} else {
+			hitPoint = ray.GetPoint (400);
+		}
+
+		return hitPoint;
+	}
+
+	public void DrawSight(){
+		Vector3 explodePoint = CalExplodePoint ();
+		Vector3 screenPoint = Camera.main.WorldToScreenPoint (explodePoint);
+
+		Rect tankRect = new Rect(screenPoint.x - tankSight.width / 2,Screen.height - screenPoint.y - tankSight.height / 2,tankSight.width,tankSight.height);
+		GUI.DrawTexture (tankRect,tankSight);
+
+		Rect centerRect = new Rect (Screen.width / 2 - centerSight.width / 2,Screen.height / 2 - centerSight.height / 2,centerSight.width,centerSight.height);
+	
+		GUI.DrawTexture (centerRect,centerSight);
+	}
+
+	public void DrawHp(){
+		Rect bgRect = new Rect (30,Screen.height - hpBarBg.height - 15,hpBarBg.width,hpBarBg.height);
+		GUI.DrawTexture (bgRect,hpBarBg);
+
+		float width = hp * 102 / maxHp;
+
+		Rect hpRect = new Rect (bgRect.x + 29,bgRect.y + 9,width,hpBar.height);
+		GUI.DrawTexture (hpRect,hpBar);
+
+		string text = Mathf.Ceil (hp).ToString () + "/" + Mathf.Ceil(maxHp).ToString();
+
+		Rect textRect = new Rect (bgRect.x + 80,bgRect.y - 10,50,50);
+		GUI.Label (textRect,text);
+	}
+
+	public void StartDrawKill(){
+		this.killUIStartTime = Time.time;
+	}
+
+	private void DrawKillUI(){
+		if(Time.time - this.killUIStartTime < 1f){
+			Rect rect = new Rect (Screen.width / 2 - killUI.width / 2,30,killUI.width,killUI.height);
+			GUI.DrawTexture (rect,killUI);
+		}
+	}
+
+	void OnGUI(){
+		if (ctrlType != CtrlType.player)
+			return;
+		DrawSight ();
+		DrawHp ();
+		DrawKillUI ();
 	}
 }
