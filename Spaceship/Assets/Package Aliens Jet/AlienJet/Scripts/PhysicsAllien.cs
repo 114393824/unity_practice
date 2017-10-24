@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PhysicsAllien : MonoBehaviour {
 
-	public float rotationSpeed = 100.0f;
+	public float rotationSpeed = -50.0f;
 
 	// Use this for initialization
 	void Start () {

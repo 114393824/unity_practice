@@ -7,15 +7,15 @@ public class RayCastShooting : MonoBehaviour {
 	public float Range = 1000;
 	public float Force = 1000;
 	public int Clips = 20;
-	public int BulletPerClip = 60;
+	public int BulletPerClip = 20;
 	public float ReloadTime = 3.3f;
 	public static int BulletsLeft = 0;
 	public float ShootTimer = 0;
-	public float ShootCooler = 0.9;
+	public float ShootCooler = 0.9f;
 	public AudioClip ShootAudio;
 	public AudioClip ReloadAudio;
 	public Transform FireBallPrefab;
-	public int Damage = 0;
+	public int Damage = 10;
 	public GUIStyle guiStyleBullets;
 
 
@@ -33,7 +33,7 @@ public class RayCastShooting : MonoBehaviour {
 			this.ShootTimer = 0;
 		}
 
-		if( Input.GetKey("e") && BulletsLeft ){
+		if( Input.GetKey("e") && BulletsLeft > 0){
 			if( this.ShootTimer == 0 ){
 				this.PlayShootAudio();
 				this.RayShoot();
@@ -51,10 +51,10 @@ public class RayCastShooting : MonoBehaviour {
 		Vector3 DirectionRay = this.transform.TransformDirection (Vector3.forward);
 		Debug.DrawRay(this.transform.position , DirectionRay * this.Range , Color.cyan);
 
-		if (Physics.Raycast (this.transform.position , DirectionRay , Hit , this.Range)) {
+		if (Physics.Raycast (this.transform.position , DirectionRay , out Hit , this.Range)) {
 			if (Hit.rigidbody) {
 				Hit.rigidbody.AddForceAtPosition ( DirectionRay * this.Force , Hit.point);
-				Hit.collider.SendMessageUpwards("ApplyDamage" , this.Damage, SendMessageOptions.DontRequireReceiver);
+//				Hit.collider.SendMessageUpwards("ApplyDamage" , this.Damage, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 
@@ -86,6 +86,6 @@ public class RayCastShooting : MonoBehaviour {
 	}
 
 	void OnGUI(){
-		GUI.Label(Rect(1650,890,100,40), BulletsLeft.ToString(),guiStyleBullets);
+//		GUI.Label(Rect(1650,890,100,40), BulletsLeft.ToString(),guiStyleBullets);
 	}
 }

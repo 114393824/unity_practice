@@ -93,6 +93,9 @@
 -define:CROSS_PLATFORM_INPUT
 'Assets/Package Aliens Jet/AlienJet/Scripts/DamageOntargetWithSpaceShip.cs'
 'Assets/Package Aliens Jet/AlienJet/Scripts/ParticlesJetMovingScript.cs'
+'Assets/Package Aliens Jet/AlienJet/Scripts/PhysicsAllien.cs'
+'Assets/Package Aliens Jet/AlienJet/Scripts/RayCastShooting.cs'
+'Assets/Package Aliens Jet/AlienJet/Scripts/SmoothFollowJet.cs'
 'Assets/Package Aliens Jet/Standard Assets/CrossPlatformInput/Scripts/AxisTouchButton.cs'
 'Assets/Package Aliens Jet/Standard Assets/CrossPlatformInput/Scripts/ButtonHandler.cs'
 'Assets/Package Aliens Jet/Standard Assets/CrossPlatformInput/Scripts/CrossPlatformInputManager.cs'

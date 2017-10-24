@@ -21,10 +21,10 @@ public class SmoothFollowJet : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		if(!this.target){
+		if(!target){
 			return;
 		}
-			
+
 		float wantedRotationAngle = this.target.eulerAngles.y;
 		float wantedHeight = this.target.position.y + this.height;
 
@@ -41,6 +41,8 @@ public class SmoothFollowJet : MonoBehaviour {
 
 		Vector3 _tmp = this.transform.position;
 		_tmp.y = currentHeight;
+
+		this.transform.position = _tmp;
 
 		this.transform.LookAt (this.target);
 	}

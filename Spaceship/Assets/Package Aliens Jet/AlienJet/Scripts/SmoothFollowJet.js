@@ -28,7 +28,7 @@ function LateUpdate () {
 	//target = GameObject.Find("AlienJet(Clone)").transform;
 	if (!target)
 		return;
-	
+	Debug.Log ("LateUpdate ------------------------------");
 	// Calculate the current rotation angles
 	wantedRotationAngle = target.eulerAngles.y;
 	wantedHeight = target.position.y + height;
@@ -41,7 +41,8 @@ function LateUpdate () {
 
 	// Damp the height
 	currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
-
+	Debug.Log ("LateUpdate currentHeight = "+currentHeight);
+	Debug.Log ("LateUpdate wantedHeight = "+wantedHeight);
 	// Convert the angle into a rotation
 	currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
 	
