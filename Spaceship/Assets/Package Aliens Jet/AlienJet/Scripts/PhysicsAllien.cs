@@ -30,10 +30,10 @@ public class PhysicsAllien : MonoBehaviour {
 			this.GetComponent<Rigidbody> ().AddRelativeTorque ( 0, 500000, 0 );
 		}
 		if(Input.GetKey("w")){
-			this.GetComponent<Rigidbody> ().AddRelativeTorque ( -400000, 0, 0 );
+			this.GetComponent<Rigidbody> ().AddRelativeTorque ( 400000, 0, 0 );
 		}
 		if(Input.GetKey("s")){
-			this.GetComponent<Rigidbody> ().AddRelativeTorque ( 400000, 0, 0 );
+			this.GetComponent<Rigidbody> ().AddRelativeTorque ( -400000, 0, 0 );
 		}
 		if(Input.GetKey("left shift")){
 			Vector3 _temp = this.GetComponent<Rigidbody> ().velocity;

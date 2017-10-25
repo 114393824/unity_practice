@@ -5,7 +5,7 @@ using UnityEngine;
 public class DamageOntargetWithSpaceShip : MonoBehaviour {
 
 	public int MaxHealth = 20;
-	public int CurrentHealth = 0;
+	public float CurrentHealth = 0.0f;
 	public float damageTimer = 0.0f;
 	public AudioClip sound;
 
@@ -24,6 +24,7 @@ public class DamageOntargetWithSpaceShip : MonoBehaviour {
 	}
 
 	public void ApplyDamage(float Damage){
+		Debug.Log ("ApplyDamage   Damage = " + Damage);
 		if(this.CurrentHealth < 0)
 			return;
 
