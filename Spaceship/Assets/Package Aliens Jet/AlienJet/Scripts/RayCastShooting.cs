@@ -54,7 +54,7 @@ public class RayCastShooting : MonoBehaviour {
 		if (Physics.Raycast (this.transform.position , DirectionRay , out Hit , this.Range)) {
 			if (Hit.rigidbody) {
 				Hit.rigidbody.AddForceAtPosition ( DirectionRay * this.Force , Hit.point);
-//				Hit.collider.SendMessageUpwards("ApplyDamage" , this.Damage, SendMessageOptions.DontRequireReceiver);
+				Hit.collider.SendMessageUpwards("ApplyDamage" , this.Damage, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 
