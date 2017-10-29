@@ -46,9 +46,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\AI.cs" />
      <Compile Include="Assets\Scripts\AxleInfo.cs" />
+     <Compile Include="Assets\Scripts\Battle.cs" />
      <Compile Include="Assets\Scripts\Bullet.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Path.cs" />
      <Compile Include="Assets\Scripts\Tank.cs" />
      <Compile Include="Assets\SkyBoxes\MouseLook.cs" />
      <Compile Include="Assets\SkyBoxes\RecordScreens.cs" />

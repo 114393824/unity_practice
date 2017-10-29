@@ -61,6 +61,8 @@ public class Tank : MonoBehaviour {
 	public AudioSource shootAudioSource;
 	public AudioClip shootClip;
 
+	private AI ai;
+
 	// Use this for initialization
 	void Start () {
 		this.turret = transform.Find ("turret");
@@ -73,6 +75,11 @@ public class Tank : MonoBehaviour {
 
 		this.shootAudioSource = gameObject.AddComponent<AudioSource> ();
 		this.shootAudioSource.spatialBlend = 1;
+
+		if(this.ctrlType == CtrlType.computer){
+			this.ai = gameObject.AddComponent<AI> ();
+			this.ai.tank = this;
+		}
 	}
 	
 	// Update is called once per frame
@@ -93,6 +100,8 @@ public class Tank : MonoBehaviour {
 //			transform.position += transform.forward * speed;
 //		}
 		PlayerCtrl ();
+		this.ComputerCtrl ();
+		this.NoneCtrl ();
 
 		foreach(AxleInfo axleInfo in axleInfos){
 			if(axleInfo.steering){
@@ -167,6 +176,34 @@ public class Tank : MonoBehaviour {
 
 		if (Input.GetMouseButton(0))
 			Shoot();
+	}
+
+	public void ComputerCtrl(){
+		if(this.ctrlType != CtrlType.computer){
+			return;
+		}
+		Vector3 rot = ai.GetTurretTarget ();
+		this.turretRotTarget = rot.y;
+		this.turretRollTarget = rot.x;
+
+		if(this.ai.IsShoot()){
+			this.Shoot ();
+		}
+
+		//移动
+		this.steering = ai.GetSteering();
+		this.motor = ai.GetMotor();
+		this.brakeTorque = ai.GetBrakeTorque();
+	}
+
+	public void NoneCtrl(){
+		if(this.ctrlType != CtrlType.none){
+			return;
+		}
+
+		this.motor = 0;
+		this.steering = 0;
+		this.brakeTorque = this.maxBrakeTorque / 2;
 	}
 
 	public void TurretRotation(){
@@ -252,6 +289,9 @@ public class Tank : MonoBehaviour {
 			return;
 		if (this.hp > 0) {
 			this.hp -= att;
+			if(this.ai != null){
+				ai.OnAttacked(attackTank);
+			}
 		}
 		if(this.hp <= 0){
 			GameObject destoryObj = (GameObject)Instantiate (this.destroyEffect);
